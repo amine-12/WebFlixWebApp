@@ -1,35 +1,79 @@
 package org.example.model;
 
-
-import org.example.util.ClobToStringConverter;
-
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Lob;
+import javax.persistence.*;
 import java.sql.Clob;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Entity
+@Table(name = "FILM")
 public class Film {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "FILM_ID")
     private int filmId;
+
+    @Column(name = "TITRE")
     private String titre;
+
+    @Column(name = "ANNEE_SORTIE")
     private int anneeSortie;
+
+    @Column(name = "LANGUE_ORIGINALE")
     private String langueOriginale;
+
+    @Column(name = "DUREE_MINUTE")
     private int dureeMinutes;
+
+    @Lob
+    @Column(name = "RESUME", nullable = false)
     private Clob resume;
+
+    @Column(name = "AFFICHE")
     private String affiche;
+
+    @Column(name = "NBR_COPIES_DISPONIBLES")
+    private int NbrCopiesDisponibles = ThreadLocalRandom.current().nextInt(1, 101);
+
+    // ----- RELATIONS -----
+
+    @OneToMany(mappedBy = "film", fetch = FetchType.LAZY)
+    private List<Personnage> personnages;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "FILM_GENRE",
+            joinColumns = @JoinColumn(name = "FILM_ID"),
+            inverseJoinColumns = @JoinColumn(name = "GENRE_ID"))
     private List<Genre> genres;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "FILM_PAYS",
+            joinColumns = @JoinColumn(name = "FILM_ID"),
+            inverseJoinColumns = @JoinColumn(name = "PAYS_ID"))
     private List<Pays> pays;
-    private Realisateur realisateur;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "FILM_SCENARISTE",
+            joinColumns = @JoinColumn(name = "FILM_ID"),
+            inverseJoinColumns = @JoinColumn(name = "SCENARISTE_ID"))
     private List<Scenariste> scenaristes;
-    private List<ActeurFilm> acteurs;
+
+    @OneToMany(mappedBy = "film", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PersonneFilmRole> roles; // contient réalisateur et acteurs
+
+    @OneToMany(mappedBy = "film", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BandeAnnonce> bandesAnnonces;
-    private Set<Copie> copies;
 
-    private int NbrCopiesDisponibles = ThreadLocalRandom.current().nextInt(1, 101);;
+    // ----- CONSTRUCTEURS -----
 
-    public Film(int id, String titre, int anneeSortie, String langueOriginale, int dureeMinutes, Clob resume, String affiche, List<Genre> genres, List<Pays> pays, Realisateur realisateur, List<Scenariste> scenaristes, List<ActeurFilm> acteurs, List<BandeAnnonce> bandesAnnonces, Set<Copie> copies) {
+    public Film() {}
+
+    public Film(int id, String titre, int anneeSortie, String langueOriginale, int dureeMinutes, Clob resume,
+                String affiche, List<Genre> genres, List<Pays> pays,
+                List<Scenariste> scenaristes, List<PersonneFilmRole> roles,
+                List<BandeAnnonce> bandesAnnonces, Set<Copie> copies) {
         this.filmId = id;
         this.titre = titre;
         this.anneeSortie = anneeSortie;
@@ -39,22 +83,15 @@ public class Film {
         this.affiche = affiche;
         this.genres = genres;
         this.pays = pays;
-        this.realisateur = realisateur;
         this.scenaristes = scenaristes;
-        this.acteurs = acteurs;
+        this.roles = roles;
         this.bandesAnnonces = bandesAnnonces;
-        this.copies = copies;
     }
 
-    public Film() {
-    }
+    // ----- GETTERS / SETTERS -----
 
-    public int getNbrCopiesDisponibles() {
-        return NbrCopiesDisponibles;
-    }
-
-    public void setNbrCopiesDisponibles(int nbrCopiesDisponibles) {
-        NbrCopiesDisponibles = nbrCopiesDisponibles;
+    public List<Personnage> getPersonnages() {
+        return personnages;
     }
 
     public int getFilmId() {
@@ -105,7 +142,6 @@ public class Film {
         this.resume = resume;
     }
 
-    // Getter pratique utilisé dans ton code pour avoir une string
     public String getResumeAsString() {
         try {
             if (resume != null) {
@@ -141,14 +177,6 @@ public class Film {
         this.pays = pays;
     }
 
-    public Realisateur getRealisateur() {
-        return realisateur;
-    }
-
-    public void setRealisateur(Realisateur realisateur) {
-        this.realisateur = realisateur;
-    }
-
     public List<Scenariste> getScenaristes() {
         return scenaristes;
     }
@@ -157,12 +185,12 @@ public class Film {
         this.scenaristes = scenaristes;
     }
 
-    public List<ActeurFilm> getActeurs() {
-        return acteurs;
+    public List<PersonneFilmRole> getRoles() {
+        return roles;
     }
 
-    public void setActeurs(List<ActeurFilm> acteurs) {
-        this.acteurs = acteurs;
+    public void setRoles(List<PersonneFilmRole> roles) {
+        this.roles = roles;
     }
 
     public List<BandeAnnonce> getBandesAnnonces() {
@@ -173,11 +201,11 @@ public class Film {
         this.bandesAnnonces = bandesAnnonces;
     }
 
-    public Set<Copie> getCopies() {
-        return copies;
+    public int getNbrCopiesDisponibles() {
+        return NbrCopiesDisponibles;
     }
 
-    public void setCopies(Set<Copie> copies) {
-        this.copies = copies;
+    public void setNbrCopiesDisponibles(int nbrCopiesDisponibles) {
+        NbrCopiesDisponibles = nbrCopiesDisponibles;
     }
 }

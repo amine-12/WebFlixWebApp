@@ -14,10 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/films")
 public class FilmController {
-    private final FilmDAO filmDAO = new FilmDAO();
+    private final FilmService filmService = new FilmService();
+
     @GetMapping("/{id}")
     public ResponseEntity<FilmDTO> getFilm(@PathVariable int id) {
-        Film film = filmDAO.getFilmById(id);
+        Film film = filmService.getFilmDetails(id);
         return ResponseEntity.ok(FilmDTO.from(film));
     }
 }

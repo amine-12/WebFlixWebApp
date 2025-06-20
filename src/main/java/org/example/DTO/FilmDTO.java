@@ -1,11 +1,9 @@
 package org.example.DTO;
-import org.example.model.Film;
-import org.example.model.Pays;
-import org.example.model.Genre;
-import org.example.model.Scenariste;
-import org.example.model.BandeAnnonce;
+
+import org.example.model.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FilmDTO {
     private String titre;
@@ -21,44 +19,66 @@ public class FilmDTO {
     private String affiche;
     private List<String> bandesAnnonces;
 
-    // Constructeur
-//    public FilmDTO(String titre, int anneeSortie, String langueOriginale, int dureeMinutes,
-//                   List<String> paysProduction, List<String> genres, String realisateur,
-//                   List<String> scenaristes, List<Acteur> acteurs, String resume,
-//                   String affiche, List<String> bandesAnnonces) {
-//        this.titre = titre;
-//        this.anneeSortie = anneeSortie;
-//        this.langueOriginale = langueOriginale;
-//        this.dureeMinutes = dureeMinutes;
-//        this.paysProduction = paysProduction;
-//        this.genres = genres;
-//        this.realisateur = realisateur;
-//        this.scenaristes = scenaristes;
-//        this.acteurs = acteurs;
-//        this.resume = resume;
-//        this.affiche = affiche;
-//        this.bandesAnnonces = bandesAnnonces;
-//    }
-
-    public FilmDTO(String titre, int anneeSortie, String langueOriginale, int dureeMinutes, String resume, String affiche) {
+    public FilmDTO(String titre, int anneeSortie, String langueOriginale, int dureeMinutes,
+                   List<String> paysProduction, List<String> genres, String realisateur,
+                   List<String> scenaristes, List<Acteur> acteurs, String resume,
+                   String affiche, List<String> bandesAnnonces) {
         this.titre = titre;
         this.anneeSortie = anneeSortie;
         this.langueOriginale = langueOriginale;
         this.dureeMinutes = dureeMinutes;
-//        this.genres = genres;
+        this.paysProduction = paysProduction;
+        this.genres = genres;
+        this.realisateur = realisateur;
+        this.scenaristes = scenaristes;
+        this.acteurs = acteurs;
         this.resume = resume;
         this.affiche = affiche;
+        this.bandesAnnonces = bandesAnnonces;
+    }
 
-        // Initialize omitted fields as empty or null to avoid NullPointerExceptions
-        this.paysProduction = List.of();
-        this.realisateur = null;
-        this.scenaristes = List.of();
-        this.acteurs = List.of();
-        this.bandesAnnonces = List.of();
+    public static FilmDTO from(Film film) {
+        // Récupérer le réalisateur
+        String realisateur = film.getRoles().stream()
+                .filter(p -> p.getRole().equalsIgnoreCase("Realisateur"))
+                .map(p -> p.getPersonne().getNom())
+                .findFirst()
+                .orElse(null);
+
+        // Récupérer les acteurs avec leur personnage
+        List<Acteur> acteurs = film.getRoles().stream()
+                .filter(p -> p.getRole().equalsIgnoreCase("Acteur"))
+                .map(p -> {
+                    String personnage = film.getPersonnages().stream()
+                            .filter(per -> per.getActeur().getPersonneFilmId() == p.getPersonne().getPersonneFilmId())
+                            .map(Personnage::getNomPersonnage)
+                            .findFirst()
+                            .orElse("Acteur");
+
+                    return new Acteur(p.getPersonne().getNom(), personnage);
+                })
+                .toList();
+
+        return new FilmDTO(
+                film.getTitre(),
+                film.getAnneeSortie(),
+                film.getLangueOriginale(),
+                film.getDureeMinutes(),
+                film.getPays() != null ? film.getPays().stream().map(Pays::getNom).toList() : List.of(),
+                film.getGenres() != null ? film.getGenres().stream().map(Genre::getNom).toList() : List.of(),
+                realisateur,
+                film.getScenaristes() != null ? film.getScenaristes().stream().map(Scenariste::getNom).toList() : List.of(),
+                acteurs,
+                film.getResumeAsString(),
+                film.getAffiche(),
+                film.getBandesAnnonces() != null ? film.getBandesAnnonces().stream().map(BandeAnnonce::getUrl).toList() : List.of()
+        );
     }
 
 
-    // Getters et setters
+
+    // Getters and setters
+
     public String getTitre() { return titre; }
     public void setTitre(String titre) { this.titre = titre; }
 
@@ -94,41 +114,6 @@ public class FilmDTO {
 
     public List<String> getBandesAnnonces() { return bandesAnnonces; }
     public void setBandesAnnonces(List<String> bandesAnnonces) { this.bandesAnnonces = bandesAnnonces; }
-
-    // À la fin de ta classe FilmDTO (avant la dernière accolade de fermeture)
-//    public static FilmDTO from(Film film) {
-//        return new FilmDTO(
-//                film.getTitre(),
-//                film.getAnneeSortie(),
-//                film.getLangueOriginale(),
-//                film.getDureeMinutes(),
-//                film.getPays().stream().map(Pays::getNom).toList(),
-//                film.getGenres().stream().map(Genre::getNom).toList(),
-//                film.getRealisateur() != null ? film.getRealisateur().getNom() : null,
-//                film.getScenaristes().stream().map(Scenariste::getNom).toList(),
-//                film.getActeurs().stream()
-//                        .map(acteur -> new Acteur(
-//                                acteur.getActeur().getNom(),
-//                                acteur.getPersonnage()))
-//                        .toList(),
-//                film.getResumeAsString(),
-//                film.getAffiche(),
-//                film.getBandesAnnonces().stream().map(BandeAnnonce::getUrl).toList()
-//        );
-//    }
-
-    public static FilmDTO from(Film film) {
-        return new FilmDTO(
-                film.getTitre(),
-                film.getAnneeSortie(),
-                film.getLangueOriginale(),
-                film.getDureeMinutes(),
-                film.getResumeAsString(),
-                film.getAffiche()
-        );
-    }
-
-
 
     // Classe interne pour représenter un acteur
     public static class Acteur {
