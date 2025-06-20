@@ -13,11 +13,6 @@ public class Scenariste {
     @Column(name = "NOM")
     private String nom;
 
-    // Ajoute d'autres colonnes si elles existent en base
-    // Par exemple :
-    // @Column(name = "DATE_NAISSANCE")
-    // private LocalDate dateNaissance;
-
     public Scenariste() {
     }
 
@@ -43,6 +38,4 @@ public class Scenariste {
     public void setNom(String nom) {
         this.nom = nom;
     }
-
-    // Ajoute d'autres getters/setters si tu ajoutes plus de champs
 }

@@ -4,7 +4,7 @@ import org.example.model.PersonneFilm;
 
 import java.time.LocalDate;
 
-public class PersonneDTO {
+public class PersonneFilmDTO {
     private int id;
     private String nom;
     private LocalDate dateNaissance;
@@ -12,8 +12,8 @@ public class PersonneDTO {
     private String photo;
     private String biographie;
 
-    public PersonneDTO(int id, String nom, LocalDate dateNaissance,
-                       String lieuNaissance, String photo, String biographie) {
+    public PersonneFilmDTO(int id, String nom, LocalDate dateNaissance,
+                           String lieuNaissance, String photo, String biographie) {
         this.id = id;
         this.nom = nom;
         this.dateNaissance = dateNaissance;
@@ -22,8 +22,8 @@ public class PersonneDTO {
         this.biographie = biographie;
     }
 
-    public static PersonneDTO from(PersonneFilm personne) {
-        return new PersonneDTO(
+    public static PersonneFilmDTO from(PersonneFilm personne) {
+        return new PersonneFilmDTO(
                 personne.getPersonneFilmId(),
                 personne.getNom(),
                 personne.getDateNaissance(),
@@ -33,7 +33,6 @@ public class PersonneDTO {
         );
     }
 
-    // Getters
     public int getId() { return id; }
     public String getNom() { return nom; }
     public LocalDate getDateNaissance() { return dateNaissance; }

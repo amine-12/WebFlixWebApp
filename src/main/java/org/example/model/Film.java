@@ -73,7 +73,7 @@ public class Film {
     public Film(int id, String titre, int anneeSortie, String langueOriginale, int dureeMinutes, Clob resume,
                 String affiche, List<Genre> genres, List<Pays> pays,
                 List<Scenariste> scenaristes, List<PersonneFilmRole> roles,
-                List<BandeAnnonce> bandesAnnonces, Set<Copie> copies) {
+                List<BandeAnnonce> bandesAnnonces) {
         this.filmId = id;
         this.titre = titre;
         this.anneeSortie = anneeSortie;

@@ -11,7 +11,7 @@
 <script>
     const id = window.location.pathname.split("/").pop();
 
-    fetch(`/api/personnes/${id}`)
+    fetch(`/api/personnes-films/${id}`)
         .then(response => response.json())
         .then(data => {
             const container = document.getElementById("realisateur-container");

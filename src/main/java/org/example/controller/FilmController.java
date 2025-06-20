@@ -1,8 +1,6 @@
 package org.example.controller;
-import java.util.List;
 
 import org.example.DTO.FilmDTO;
-import org.example.dao.FilmDAO;
 import org.example.model.Film;
 import org.example.service.FilmService;
 import org.springframework.http.ResponseEntity;

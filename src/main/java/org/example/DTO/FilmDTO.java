@@ -76,7 +76,6 @@ public class FilmDTO {
         );
     }
 
-    // Getters and setters
 
     public String getTitre() { return titre; }
     public void setTitre(String titre) { this.titre = titre; }
@@ -114,9 +113,8 @@ public class FilmDTO {
     public List<String> getBandesAnnonces() { return bandesAnnonces; }
     public void setBandesAnnonces(List<String> bandesAnnonces) { this.bandesAnnonces = bandesAnnonces; }
 
-    // Classe interne pour représenter un acteur
     public static class Acteur {
-        private int id; // Ajouté
+        private int id;
         private String nom;
         private String personnage;
 
