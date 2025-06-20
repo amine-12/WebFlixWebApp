@@ -1,7 +1,10 @@
 package org.example.model;
 
 
+import org.example.util.ClobToStringConverter;
+
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Lob;
 import java.sql.Clob;
 import java.util.List;
@@ -14,9 +17,6 @@ public class Film {
     private int anneeSortie;
     private String langueOriginale;
     private int dureeMinutes;
-
-    @Lob
-    @Column(name = "RESUME", nullable = false)
     private Clob resume;
     private String affiche;
     private List<Genre> genres;
@@ -24,12 +24,12 @@ public class Film {
     private Realisateur realisateur;
     private List<Scenariste> scenaristes;
     private List<ActeurFilm> acteurs;
-    private List<String> bandesAnnonces;
+    private List<BandeAnnonce> bandesAnnonces;
     private Set<Copie> copies;
 
     private int NbrCopiesDisponibles = ThreadLocalRandom.current().nextInt(1, 101);;
 
-    public Film(int id, String titre, int anneeSortie, String langueOriginale, int dureeMinutes, Clob resume, String affiche, List<Genre> genres, List<Pays> pays, Realisateur realisateur, List<Scenariste> scenaristes, List<ActeurFilm> acteurs, List<String> bandesAnnonces, Set<Copie> copies) {
+    public Film(int id, String titre, int anneeSortie, String langueOriginale, int dureeMinutes, Clob resume, String affiche, List<Genre> genres, List<Pays> pays, Realisateur realisateur, List<Scenariste> scenaristes, List<ActeurFilm> acteurs, List<BandeAnnonce> bandesAnnonces, Set<Copie> copies) {
         this.filmId = id;
         this.titre = titre;
         this.anneeSortie = anneeSortie;
@@ -105,6 +105,18 @@ public class Film {
         this.resume = resume;
     }
 
+    // Getter pratique utilisé dans ton code pour avoir une string
+    public String getResumeAsString() {
+        try {
+            if (resume != null) {
+                return resume.getSubString(1, (int) resume.length());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public String getAffiche() {
         return affiche;
     }
@@ -153,11 +165,11 @@ public class Film {
         this.acteurs = acteurs;
     }
 
-    public List<String> getBandesAnnonces() {
+    public List<BandeAnnonce> getBandesAnnonces() {
         return bandesAnnonces;
     }
 
-    public void setBandesAnnonces(List<String> bandesAnnonces) {
+    public void setBandesAnnonces(List<BandeAnnonce> bandesAnnonces) {
         this.bandesAnnonces = bandesAnnonces;
     }
 

@@ -9,30 +9,38 @@
 <div id="film-container"></div>
 
 <script>
-    fetch("/api/films/109830")  // L’URL de ton contrôleur REST
+    fetch("/api/films/240772")
         .then(response => response.json())
         .then(data => {
             console.log(data);
             const container = document.getElementById("film-container");
             container.innerHTML = `
-                <h2>${data.titre} (${data.annee})</h2>
-                <p><strong>Langue:</strong> ${data.langue}</p>
-                <p><strong>Durée:</strong> ${data.duree} minutes</p>
-                <p><strong>Pays:</strong> ${(data.paysProduction || []).join(", ")}</p>
-
-                <p><strong>Genres:</strong> ${data.genres.join(", ")}</p>
-                <p><strong>Réalisateur:</strong> ${data.realisateur}</p>
-                <p><strong>Scénaristes:</strong> ${data.scenaristes.join(", ")}</p>
-                <p><strong>Acteurs:</strong> ${data.acteurs.map(a => a.nom + " (rôle: " + a.role + ")").join("<br>")}</p>
-                <p><strong>Résumé:</strong> ${data.resume}</p>
-                <img src="${data.affiche}" alt="Affiche du film" style="max-width:200px;"><br>
+                <h2>${data.titre ?? "Titre inconnu"} (${data.anneeSortie ?? "?"})</h2>
+                <p><strong>Langue:</strong> ${data.langueOriginale ?? "Inconnue"}</p>
+                <p><strong>Durée:</strong> ${data.dureeMinutes ?? "?"} minutes</p>
+                <p><strong>Pays:</strong> ${(data.paysProduction ?? []).join(", ") || "Non spécifié"}</p>
+                <p><strong>Genres:</strong> ${(data.genres ?? []).join(", ") || "Non spécifié"}</p>
+                <p><strong>Réalisateur:</strong> ${data.realisateur ?? "Non spécifié"}</p>
+                <p><strong>Scénaristes:</strong> ${(data.scenaristes ?? []).join(", ") || "Non spécifié"}</p>
+                <p><strong>Acteurs:</strong> ${
+                (data.acteurs ?? []).length > 0
+                    ? data.acteurs.map(a => `${a.nom ?? "?"} (rôle: ${a.role ?? "?"})`).join("<br>")
+                    : "Aucun acteur listé"
+            }</p>
+                <p><strong>Résumé:</strong> ${data.resume ?? "Aucun résumé disponible."}</p>
+                ${data.affiche ? `<img src="${data.affiche}" alt="Affiche du film" style="max-width:200px;"><br>` : ""}
                 <p><strong>Bande-annonces:</strong></p>
-                <ul>${(data.bandesAnnonces || []).map(url => `<li><a href="${url}" target="_blank">${url}</a></li>`).join("")}</ul>
-
+                <ul>
+                    ${(data.bandesAnnonces ?? []).length > 0
+                ? data.bandesAnnonces.map(url => `<li><a href="${url}" target="_blank">${url}</a></li>`).join("")
+                : "<li>Aucune bande-annonce</li>"
+            }
+                </ul>
             `;
         })
         .catch(error => {
             console.error("Erreur lors de la récupération du film :", error);
+            document.getElementById("film-container").innerHTML = `<p style="color:red;">Impossible de charger les données du film.</p>`;
         });
 </script>
 </body>
