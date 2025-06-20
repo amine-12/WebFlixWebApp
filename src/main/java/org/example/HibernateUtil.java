@@ -19,13 +19,12 @@ public class HibernateUtil {
 			config.setProperty("hibernate.connection.password", "rReS1OJQ");
 			config.setProperty("hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect");
 			config.setProperty("hibernate.show_sql", "true");
-			config.setProperty("hibernate.hbm2ddl.auto", "none"); // or "validate" to ensure structure is correct
+			config.setProperty("hibernate.hbm2ddl.auto", "none");
 
 			// Register annotated classes
 			config.addAnnotatedClass(Film.class);
 			config.addAnnotatedClass(Genre.class);
 			config.addAnnotatedClass(Pays.class);
-//			config.addAnnotatedClass(Realisateur.class);
 			config.addAnnotatedClass(Scenariste.class);
 			config.addAnnotatedClass(Personnage.class);
 			config.addAnnotatedClass(BandeAnnonce.class);

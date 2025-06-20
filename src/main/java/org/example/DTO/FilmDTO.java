@@ -12,7 +12,7 @@ public class FilmDTO {
     private int dureeMinutes;
     private List<String> paysProduction;
     private List<String> genres;
-    private String realisateur;
+    private Realisateur realisateur;
     private List<String> scenaristes;
     private List<Acteur> acteurs;
     private String resume;
@@ -20,7 +20,7 @@ public class FilmDTO {
     private List<String> bandesAnnonces;
 
     public FilmDTO(String titre, int anneeSortie, String langueOriginale, int dureeMinutes,
-                   List<String> paysProduction, List<String> genres, String realisateur,
+                   List<String> paysProduction, List<String> genres, Realisateur realisateur,
                    List<String> scenaristes, List<Acteur> acteurs, String resume,
                    String affiche, List<String> bandesAnnonces) {
         this.titre = titre;
@@ -39,11 +39,12 @@ public class FilmDTO {
 
     public static FilmDTO from(Film film) {
         // Récupérer le réalisateur
-        String realisateur = film.getRoles().stream()
+        Realisateur realisateur = film.getRoles().stream()
                 .filter(p -> p.getRole().equalsIgnoreCase("Realisateur"))
-                .map(p -> p.getPersonne().getNom())
+                .map(p -> new Realisateur(p.getPersonne().getPersonneFilmId(), p.getPersonne().getNom()))
                 .findFirst()
                 .orElse(null);
+
 
         // Récupérer les acteurs avec leur personnage
         List<Acteur> acteurs = film.getRoles().stream()
@@ -55,7 +56,7 @@ public class FilmDTO {
                             .findFirst()
                             .orElse("Acteur");
 
-                    return new Acteur(p.getPersonne().getNom(), personnage);
+                    return new Acteur(p.getPersonne().getPersonneFilmId(), p.getPersonne().getNom(), personnage);
                 })
                 .toList();
 
@@ -74,8 +75,6 @@ public class FilmDTO {
                 film.getBandesAnnonces() != null ? film.getBandesAnnonces().stream().map(BandeAnnonce::getUrl).toList() : List.of()
         );
     }
-
-
 
     // Getters and setters
 
@@ -97,8 +96,8 @@ public class FilmDTO {
     public List<String> getGenres() { return genres; }
     public void setGenres(List<String> genres) { this.genres = genres; }
 
-    public String getRealisateur() { return realisateur; }
-    public void setRealisateur(String realisateur) { this.realisateur = realisateur; }
+    public Realisateur getRealisateur() { return realisateur; }
+    public void setRealisateur(Realisateur realisateur) { this.realisateur = realisateur; }
 
     public List<String> getScenaristes() { return scenaristes; }
     public void setScenaristes(List<String> scenaristes) { this.scenaristes = scenaristes; }
@@ -117,13 +116,18 @@ public class FilmDTO {
 
     // Classe interne pour représenter un acteur
     public static class Acteur {
+        private int id; // Ajouté
         private String nom;
         private String personnage;
 
-        public Acteur(String nom, String personnage) {
+        public Acteur(int id, String nom, String personnage) {
+            this.id = id;
             this.nom = nom;
             this.personnage = personnage;
         }
+
+        public int getId() { return id; }
+        public void setId(int id) { this.id = id; }
 
         public String getNom() { return nom; }
         public void setNom(String nom) { this.nom = nom; }
@@ -131,4 +135,22 @@ public class FilmDTO {
         public String getPersonnage() { return personnage; }
         public void setPersonnage(String personnage) { this.personnage = personnage; }
     }
+
+    public static class Realisateur {
+        private int id;
+        private String nom;
+
+        public Realisateur(int id, String nom) {
+            this.id = id;
+            this.nom = nom;
+        }
+
+        public int getId() { return id; }
+        public void setId(int id) { this.id = id; }
+
+        public String getNom() { return nom; }
+        public void setNom(String nom) { this.nom = nom; }
+    }
+
+
 }

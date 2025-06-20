@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Réalisateur</title>
+</head>
+<body>
+<h1>Détails du Réalisateur</h1>
+<div id="realisateur-container"></div>
+
+<script>
+    const id = window.location.pathname.split("/").pop();
+
+    fetch(`/api/personnes/${id}`)
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById("realisateur-container");
+            container.innerHTML = `
+                <h2>${data.nom ?? "Nom inconnu"}</h2>
+                <p><strong>Date de naissance:</strong> ${data.dateNaissance ?? "?"}</p>
+                <p><strong>Lieu de naissance:</strong> ${data.lieuNaissance ?? "?"}</p>
+                <p><strong>Biographie:</strong> ${data.biographie ?? "Non disponible."}</p>
+            `;
+        })
+        .catch(err => {
+            console.error("Erreur:", err);
+            document.getElementById("realisateur-container").innerHTML = `<p style="color:red;">Impossible de charger les données du réalisateur.</p>`;
+        });
+</script>
+</body>
+</html>

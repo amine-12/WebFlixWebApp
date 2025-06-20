@@ -22,15 +22,20 @@
                 <p><strong>Durée:</strong> ${data.dureeMinutes ?? "?"} minutes</p>
                 <p><strong>Pays:</strong> ${(data.paysProduction ?? []).join(", ") || "Non spécifié"}</p>
                 <p><strong>Genres:</strong> ${(data.genres ?? []).join(", ") || "Non spécifié"}</p>
-                <p><strong>Réalisateur:</strong> ${data.realisateur ?? "Non spécifié"}</p>
+                <p><strong>Réalisateur:</strong>
+                <a href="/realisateur/${data.realisateur.id}">
+                    ${data.realisateur.nom}
+                </a></p>
+
                 <p><strong>Scénaristes:</strong> ${(data.scenaristes ?? []).join(", ") || "Non spécifié"}</p>
-                <p><strong>Acteurs:</strong> ${
+                <p><strong>Acteurs:</strong><br> ${
                 (data.acteurs ?? []).length > 0
-                    ? data.acteurs.map(a => `${a.nom ?? "?"} (rôle: ${a.personnage ?? "?"})`).join("<br>")
+                    ? data.acteurs.map(a =>
+                        `<a href="/acteur/${a.id}">${a.nom}</a> (rôle: ${a.personnage ?? "?"})`
+                    ).join("<br>")
                     : "Aucun acteur listé"
             }</p>
                 <p><strong>Résumé:</strong> ${data.resume ?? "Aucun résumé disponible."}</p>
-
                 <p><strong>Bande-annonces:</strong></p>
                 <ul>
                     ${(data.bandesAnnonces ?? []).length > 0
