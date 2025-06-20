@@ -16,6 +16,7 @@
             const container = document.getElementById("film-container");
             container.innerHTML = `
                 <h2>${data.titre ?? "Titre inconnu"} (${data.anneeSortie ?? "?"})</h2>
+                ${data.affiche ? `<img src="${data.affiche}" alt="Affiche du film" style="max-width:200px;"><br>` : ""}
                 <p><strong>Langue:</strong> ${data.langueOriginale ?? "Inconnue"}</p>
                 <p><strong>Durée:</strong> ${data.dureeMinutes ?? "?"} minutes</p>
                 <p><strong>Pays:</strong> ${(data.paysProduction ?? []).join(", ") || "Non spécifié"}</p>
@@ -24,11 +25,11 @@
                 <p><strong>Scénaristes:</strong> ${(data.scenaristes ?? []).join(", ") || "Non spécifié"}</p>
                 <p><strong>Acteurs:</strong> ${
                 (data.acteurs ?? []).length > 0
-                    ? data.acteurs.map(a => `${a.nom ?? "?"} (rôle: ${a.role ?? "?"})`).join("<br>")
+                    ? data.acteurs.map(a => `${a.nom ?? "?"} (rôle: ${a.personnage ?? "?"})`).join("<br>")
                     : "Aucun acteur listé"
             }</p>
                 <p><strong>Résumé:</strong> ${data.resume ?? "Aucun résumé disponible."}</p>
-                ${data.affiche ? `<img src="${data.affiche}" alt="Affiche du film" style="max-width:200px;"><br>` : ""}
+
                 <p><strong>Bande-annonces:</strong></p>
                 <ul>
                     ${(data.bandesAnnonces ?? []).length > 0

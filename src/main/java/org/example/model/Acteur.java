@@ -1,7 +1,9 @@
 package org.example.model;
 
+import javax.persistence.Entity;
 import java.time.LocalDate;
 
+@Entity
 public class Acteur extends PersonneFilm {
     public Acteur() {
         super();

@@ -4,9 +4,11 @@ import org.example.dao.FilmDAO;
 import org.example.model.Film;
 
 public class FilmService {
-    private FilmDAO filmDAO = new FilmDAO();
+    private final FilmDAO filmDAO = new FilmDAO();
 
     public Film getFilmDetails(int id) {
-        return filmDAO.getFilmById(id);
+        Film film = filmDAO.getFilmById(id);
+        return film;
     }
 }
+

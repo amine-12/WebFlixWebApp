@@ -1,8 +1,18 @@
 package org.example.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "PAYS")
 public class Pays {
+    @Id
+    @Column(name = "PAYS_ID")
     private int paysId;
+
+    @Column(name = "NOM")
     private String nom;
+
+    public Pays() {}
 
     public Pays(String nom) {
         this.nom = nom;
