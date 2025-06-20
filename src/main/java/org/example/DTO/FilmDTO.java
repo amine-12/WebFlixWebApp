@@ -3,7 +3,7 @@ package org.example.DTO;
 import org.example.model.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class FilmDTO {
     private String titre;
