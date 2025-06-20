@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.DTO.PersonneFilmDTO;
+import org.example.facade.FilmSystemFacade;
 import org.example.model.PersonneFilm;
 import org.example.service.PersonneFilmService;
 import org.springframework.http.ResponseEntity;
@@ -12,15 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/personnes-films/")
 public class PersonneFilmController {
-    PersonneFilmService personneFilmService = new PersonneFilmService();
+    private final FilmSystemFacade facade;
+
+    public PersonneFilmController() {
+        this.facade = new FilmSystemFacade();
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<PersonneFilmDTO> getPersonne(@PathVariable int id) {
-        PersonneFilm personne = personneFilmService.getPersonneFilmDetails(id);
+        PersonneFilmDTO personne = facade.getPersonneDetails(id);
         if (personne == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(PersonneFilmDTO.from(personne));
+        return ResponseEntity.ok(personne);
     }
 
 }
