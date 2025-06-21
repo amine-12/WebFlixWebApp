@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Détails de l'acteur</title>
+</head>
+<body>
+<h1>Détails de l'acteur</h1>
+<div id="acteur-container"></div>
+
+<script>
+    const pathParts = window.location.pathname.split('/');
+    const acteurId = pathParts[pathParts.length - 1];
+
+    fetch(`/api/personnes-films/${acteurId}`)
+        .then(response => {
+            if (!response.ok) throw new Error("Acteur non trouvé");
+            return response.json();
+        })
+        .then(data => {
+            const container = document.getElementById("acteur-container");
+            container.innerHTML = `
+                <h2>${data.nom}</h2>
+                ${data.photo ? `<img src="${data.photo}" alt="Photo de ${data.nom}" style="max-width:200px;"><br>` : ''}
+                <p><strong>Date de naissance:</strong> ${data.dateNaissance || "Inconnue"}</p>
+                <p><strong>Lieu de naissance:</strong> ${data.lieuNaissance || "Inconnu"}</p>
+                <p><strong>Biographie:</strong><br>${data.biographie || "Aucune biographie disponible."}</p>
+            `;
+        })
+        .catch(error => {
+            document.getElementById("acteur-container").innerHTML =
+                `<p style="color:red;">Erreur : ${error.message}</p>`;
+        });
+</script>
+</body>
+</html>

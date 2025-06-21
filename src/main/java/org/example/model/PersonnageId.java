@@ -24,7 +24,6 @@ public class PersonnageId implements Serializable {
     public int getFilmId() { return filmId; }
     public void setFilmId(int filmId) { this.filmId = filmId; }
 
-    // equals() et hashCode() sont OBLIGATOIRES pour les clés composites
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

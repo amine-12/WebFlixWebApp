@@ -25,7 +25,6 @@ public class FilmDAO {
                 Hibernate.initialize(role.getPersonne());
             }
 
-            // Réalisateur s’il existe
             film.getRoles().stream()
                     .filter(r -> r.getRole().equalsIgnoreCase("Réalisateur"))
                     .findFirst()

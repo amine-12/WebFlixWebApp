@@ -12,20 +12,17 @@ public class HibernateUtil {
 		try {
 			Configuration config = new Configuration();
 
-			// Database settings
 			config.setProperty("hibernate.connection.driver_class", "oracle.jdbc.OracleDriver");
 			config.setProperty("hibernate.connection.url", "jdbc:oracle:thin:@//bdlog660.ens.ad.etsmtl.ca:1521/ORCLPDB.ens.ad.etsmtl.ca");
 			config.setProperty("hibernate.connection.username", "EQUIPE205");
 			config.setProperty("hibernate.connection.password", "rReS1OJQ");
 			config.setProperty("hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect");
 			config.setProperty("hibernate.show_sql", "true");
-			config.setProperty("hibernate.hbm2ddl.auto", "none"); // or "validate" to ensure structure is correct
+			config.setProperty("hibernate.hbm2ddl.auto", "none");
 
-			// Register annotated classes
 			config.addAnnotatedClass(Film.class);
 			config.addAnnotatedClass(Genre.class);
 			config.addAnnotatedClass(Pays.class);
-//			config.addAnnotatedClass(Realisateur.class);
 			config.addAnnotatedClass(Scenariste.class);
 			config.addAnnotatedClass(Personnage.class);
 			config.addAnnotatedClass(BandeAnnonce.class);
