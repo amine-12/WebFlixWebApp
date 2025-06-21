@@ -29,7 +29,7 @@ public class Film {
 
     @Lob
     @Column(name = "RESUME", nullable = false)
-    private Clob resume;
+    private String resume;
 
     @Column(name = "AFFICHE")
     private String affiche;
@@ -70,7 +70,7 @@ public class Film {
 
     public Film() {}
 
-    public Film(int id, String titre, int anneeSortie, String langueOriginale, int dureeMinutes, Clob resume,
+    public Film(int id, String titre, int anneeSortie, String langueOriginale, int dureeMinutes, String resume,
                 String affiche, List<Genre> genres, List<Pays> pays,
                 List<Scenariste> scenaristes, List<PersonneFilmRole> roles,
                 List<BandeAnnonce> bandesAnnonces) {
@@ -134,23 +134,12 @@ public class Film {
         this.dureeMinutes = dureeMinutes;
     }
 
-    public Clob getResume() {
+    public String getResume() {
         return resume;
     }
 
-    public void setResume(Clob resume) {
+    public void setResume(String resume) {
         this.resume = resume;
-    }
-
-    public String getResumeAsString() {
-        try {
-            if (resume != null) {
-                return resume.getSubString(1, (int) resume.length());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public String getAffiche() {

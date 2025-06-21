@@ -70,7 +70,7 @@ public class FilmDTO {
                 realisateur,
                 film.getScenaristes() != null ? film.getScenaristes().stream().map(Scenariste::getNom).toList() : List.of(),
                 acteurs,
-                film.getResumeAsString(),
+                film.getResume(),
                 film.getAffiche(),
                 film.getBandesAnnonces() != null ? film.getBandesAnnonces().stream().map(BandeAnnonce::getUrl).toList() : List.of()
         );
