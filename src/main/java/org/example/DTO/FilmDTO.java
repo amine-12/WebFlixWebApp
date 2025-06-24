@@ -76,6 +76,9 @@ public class FilmDTO {
         );
     }
 
+    public static List<FilmDTO> fromList(List<Film> films) {
+        return films.stream().map(FilmDTO::from).toList();
+    }
 
     public String getTitre() { return titre; }
     public void setTitre(String titre) { this.titre = titre; }
