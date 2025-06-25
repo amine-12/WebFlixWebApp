@@ -8,12 +8,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebRoutingConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
+        // Vos routes existantes…
         registry.addViewController("/film/{id:\\d+}")
                 .setViewName("forward:/film.html");
         registry.addViewController("/acteur/{id:\\d+}")
                 .setViewName("forward:/acteur.html");
         registry.addViewController("/realisateur/{id:\\d+}")
                 .setViewName("forward:/realisateur.html");
+        registry.addViewController("/login")
+                .setViewName("forward:/login.html");
+        registry.addViewController("/register")
+                .setViewName("forward:/register.html");
     }
 }
-

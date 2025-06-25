@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Inscription</title>
+</head>
+<body>
+<h1>Inscription</h1>
+<form id="register-form">
+    <label>
+        Email: <input type="email" id="email" required>
+    </label><br>
+    <label>
+        Mot de passe: <input type="password" id="motDePasse" required>
+    </label><br>
+    <label>
+        Rôle:
+        <select id="role">
+            <option value="CLIENT">Client</option>
+            <option value="ADMIN">Admin</option>
+        </select>
+    </label><br>
+    <button type="submit">S’inscrire</button>
+</form>
+<p id="message"></p>
+
+<script>
+    const msg = document.getElementById('message');
+    document.getElementById('register-form').addEventListener('submit', e => {
+        e.preventDefault();
+        msg.textContent = '';
+        const email = document.getElementById('email').value;
+        const motDePasse = document.getElementById('motDePasse').value;
+        const role = document.getElementById('role').value;
+
+        fetch(`http://localhost:8080/api/utilisateurs/register?role=${role}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ email, motDePasse })
+        })
+            .then(res => {
+                if (!res.ok) throw new Error('Échec de l’inscription');
+                return res.json();
+            })
+            .then(user => {
+                msg.style.color = 'green';
+                msg.textContent = `Inscription réussie ! Votre ID est ${user.id}`;
+            })
+            .catch(err => {
+                msg.style.color = 'red';
+                msg.textContent = err.message;
+            });
+    });
+</script>
+</body>
+</html>

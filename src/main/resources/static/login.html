@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion</title>
+</head>
+<body>
+<h1>Connexion</h1>
+<form id="login-form">
+    <label>
+        Email: <input type="email" id="email" required>
+    </label><br>
+    <label>
+        Mot de passe: <input type="password" id="motDePasse" required>
+    </label><br>
+    <button type="submit">Se connecter</button>
+</form>
+<!-- zone de message : on réutilise la même balise -->
+<p id="message"></p>
+
+<script>
+    const msg = document.getElementById('message');
+    document.getElementById('login-form').addEventListener('submit', e => {
+        e.preventDefault();
+        msg.textContent = '';           // reset
+        fetch('http://localhost:8080/api/utilisateurs/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                email: document.getElementById('email').value,
+                motDePasse: document.getElementById('motDePasse').value
+            })
+        })
+            .then(res => {
+                if (!res.ok) throw new Error('Identifiants invalides');
+                return res.json();
+            })
+            .then(user => {
+                msg.style.color = 'green';
+                msg.textContent = 'Connexion réussie ! Bienvenue, ' + user.email;
+            })
+            .catch(err => {
+                msg.style.color = 'red';
+                msg.textContent = err.message;
+            });
+    });
+</script>
+</body>
+</html>
