@@ -120,4 +120,13 @@ public class FilmDAO {
             return map;
         }).toList();
     }
+
+    public void update(Film film) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        session.update(film);
+        session.getTransaction().commit();
+        session.close();
+    }
+
 }

@@ -8,36 +8,42 @@
 <h1>Connexion</h1>
 <form id="login-form">
     <label>
-        Email: <input type="email" id="email" required>
+        Courriel: <input type="email" id="email" required>
     </label><br>
     <label>
         Mot de passe: <input type="password" id="motDePasse" required>
     </label><br>
     <button type="submit">Se connecter</button>
 </form>
-<!-- zone de message : on réutilise la même balise -->
 <p id="message"></p>
 
 <script>
     const msg = document.getElementById('message');
     document.getElementById('login-form').addEventListener('submit', e => {
         e.preventDefault();
-        msg.textContent = '';           // reset
-        fetch('http://localhost:8080/api/utilisateurs/login', {
+        msg.textContent = '';
+
+        const formData = new URLSearchParams();
+        formData.append('courriel', document.getElementById('email').value);
+        formData.append('motDePasse', document.getElementById('motDePasse').value);
+
+        fetch('http://localhost:8080/api/personnes/login', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                email: document.getElementById('email').value,
-                motDePasse: document.getElementById('motDePasse').value
-            })
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: formData.toString()
         })
             .then(res => {
                 if (!res.ok) throw new Error('Identifiants invalides');
                 return res.json();
             })
-            .then(user => {
-                msg.style.color = 'green';
-                msg.textContent = 'Connexion réussie ! Bienvenue, ' + user.email;
+            .then(personne => {
+                // Stocker le clientId (PERSONNE_ID)
+                localStorage.setItem('clientId', personne.id);
+
+                // Rediriger
+                window.location.href = '/recherche';
             })
             .catch(err => {
                 msg.style.color = 'red';

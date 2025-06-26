@@ -30,6 +30,9 @@ public class HibernateUtil {
 			config.addAnnotatedClass(PersonneFilm.class);
 			config.addAnnotatedClass(Copie.class);
 			config.addAnnotatedClass(Utilisateur.class);
+			config.addAnnotatedClass(Client.class);
+			config.addAnnotatedClass(Location.class);
+			config.addAnnotatedClass(Personne.class);
 
 			StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
 					.applySettings(config.getProperties());

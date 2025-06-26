@@ -38,6 +38,13 @@ public class Utilisateur {
         this.role = role;
     }
 
+    @Transient
+    private int nbLocationsEnCours;
+
+    @Transient
+    private String codeForfait; // "D", "I", "A"
+
+
     // ----- Getters et setters -----
     public Integer getId() {
         return id;

@@ -1,30 +1,38 @@
 package org.example.model;
 
-import java.util.List;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "COPIE_FILM")
 public class Copie {
-    private int copieId;
-    private String codeCopie;
-    private Film film;
-    private String estDisponible;
-    private List<Location> locations;
 
-    public Copie(int copieId, String codeCopie, Film film, String estDisponible, List<Location> locations) {
+    @Id
+    @Column(name = "COPIE_ID")
+    private Integer copieId;
+
+    @Column(name = "CODE_COPIE", length = 50)
+    private String codeCopie;
+
+    @Column(name = "FILM_ID")
+    private Integer filmId;
+
+    @Column(name = "EST_DISPONIBLE", length = 5)
+    private String estDisponible;
+
+    public Copie() {}
+
+    public Copie(Integer copieId, String codeCopie, Integer filmId, String estDisponible) {
         this.copieId = copieId;
         this.codeCopie = codeCopie;
-        this.film = film;
+        this.filmId = filmId;
         this.estDisponible = estDisponible;
-        this.locations = locations;
     }
 
-    public Copie() {
-
-    }
-    public int getCopieId() {
+    public Integer getCopieId() {
         return copieId;
     }
 
-    public void setCopieId(int copieId) {
+    public void setCopieId(Integer copieId) {
         this.copieId = copieId;
     }
 
@@ -36,27 +44,19 @@ public class Copie {
         this.codeCopie = codeCopie;
     }
 
-    public Film getFilm() {
-        return film;
+    public Integer getFilmId() {
+        return filmId;
     }
 
-    public void setFilm(Film film) {
-        this.film = film;
+    public void setFilmId(Integer filmId) {
+        this.filmId = filmId;
     }
 
-    public String isEstDisponible() {
+    public String getEstDisponible() {
         return estDisponible;
     }
 
     public void setEstDisponible(String estDisponible) {
         this.estDisponible = estDisponible;
-    }
-
-    public List<Location> getLocations() {
-        return locations;
-    }
-
-    public void setLocations(List<Location> locations) {
-        this.locations = locations;
     }
 }

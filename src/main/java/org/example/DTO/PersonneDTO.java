@@ -1,15 +1,15 @@
 package org.example.DTO;
 
-public class UtilisateurDTO {
+public class PersonneDTO {
     private Integer id;
     private String email;
     private String role;
 
     // Constructeur vide (pour Jackson si besoin)
-    public UtilisateurDTO() {}
+    public PersonneDTO() {}
 
     // Constructeur paramétré
-    public UtilisateurDTO(Integer id, String email, String role) {
+    public PersonneDTO(Integer id, String email) {
         this.id = id;
         this.email = email;
         this.role = role;

@@ -2,16 +2,14 @@ package org.example.facade;
 
 import org.example.DTO.FilmDTO;
 import org.example.DTO.PersonneFilmDTO;
-import org.example.DTO.UtilisateurDTO;
+import org.example.DTO.PersonneDTO;
+import org.example.model.Copie;
+import org.example.model.Personne;
 import org.example.model.Utilisateur;
-import org.example.service.FilmService;
-import org.example.service.PersonneFilmService;
-import org.example.service.UtilisateurService;
+import org.example.service.*;
 
 import java.util.List;
 import java.util.Map;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 public class FilmSystemFacade {
     private final FilmService filmService;
@@ -19,6 +17,7 @@ public class FilmSystemFacade {
     private final UtilisateurService utilisateurService;
 
     public FilmSystemFacade() {
+        this.personneService = new PersonneService();
         this.filmService = new FilmService();
         this.personneFilmService = new PersonneFilmService();
         this.utilisateurService = new UtilisateurService();
@@ -36,15 +35,15 @@ public class FilmSystemFacade {
         return PersonneFilmDTO.from(personneFilmService.getPersonneFilmDetails(id));
     }
 
-    public UtilisateurDTO login(String email, String motDePasse) {
-        Utilisateur u = utilisateurService.authenticate(email, motDePasse);
-        return u == null
-                ? null
-                : new UtilisateurDTO(u.getId(), u.getEmail(), u.getRole());
+    public Personne login(String email, String motDePasse) {
+        return personneService.login(email, motDePasse);
     }
 
-    public UtilisateurDTO register(String email, String motDePasse, String role) {
-        Utilisateur u = utilisateurService.register(email, motDePasse, role);
-        return new UtilisateurDTO(u.getId(), u.getEmail(), u.getRole());
+    public List<Copie> getCopiesDisponibles(int filmId) {
+        return locationService.getCopies(filmId);
+    }
+
+    public String louerFilm(int clientId, int copieId) {
+        return locationService.louerFilm(clientId, copieId);
     }
 }

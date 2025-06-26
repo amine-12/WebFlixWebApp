@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Louer un film</title>
+</head>
+<body>
+<h1>Location de film</h1>
+<div id="copies-list"></div>
+<p id="message"></p>
+
+<script>
+    const message = document.getElementById('message');
+    const filmId = window.location.pathname.split('/').pop();
+    const clientId = localStorage.getItem('clientId');
+
+    if (!clientId) {
+        message.textContent = "Vous devez être connecté pour louer un film.";
+        message.style.color = 'red';
+    } else {
+        fetch(`/api/locations/copies-disponibles/${filmId}`)
+            .then(res => res.json())
+            .then(copies => {
+                const container = document.getElementById('copies-list');
+                if (copies.length === 0) {
+                    container.innerHTML = '<p>Aucune copie disponible pour ce film.</p>';
+                    return;
+                }
+
+                container.innerHTML = '<p>Choisissez une copie :</p>';
+                copies.forEach(copie => {
+                    const btn = document.createElement('button');
+                    btn.textContent = 'Louer copie #' + copie.copieId;
+                    btn.onclick = () => louerCopie(copie.copieId);
+                    container.appendChild(btn);
+                    container.appendChild(document.createElement('br'));
+                });
+            });
+    }
+
+    function louerCopie(copieId) {
+        fetch('/api/locations/louer', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ clientId: clientId, copieId: copieId })
+        })
+            .then(res => res.text())
+            .then(txt => {
+                message.style.color = 'green';
+                message.textContent = txt;
+            })
+            .catch(err => {
+                message.style.color = 'red';
+                message.textContent = 'Erreur lors de la location.';
+            });
+    }
+</script>
+</body>
+</html>

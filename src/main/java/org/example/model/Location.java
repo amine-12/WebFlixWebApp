@@ -1,49 +1,84 @@
 package org.example.model;
 
-import java.util.Date;
+import javax.persistence.*;
+import java.time.LocalDate;
 
+@Entity
+@Table(name = "LOCATION")
+@SequenceGenerator(
+        name = "location_seq",
+        sequenceName = "LOCATION_SEQ",
+        allocationSize = 1
+)
 public class Location {
-    private Date dateLocation;
-    private Date dateRetourPrevue;
-    private Date dateRetourReelle;
-    private Copie copie;
 
-    public Location(Date dateLocation, Date dateRetourPrevue, Date dateRetourReelle, Copie copie) {
-        this.dateLocation = dateLocation;
-        this.dateRetourPrevue = dateRetourPrevue;
-        this.dateRetourReelle = dateRetourReelle;
-        this.copie = copie;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "location_seq")
+    @Column(name = "LOCATION_ID")
+    private Integer id;
+
+    @Column(name = "COPIE_ID", nullable = false)
+    private Integer copieId;
+
+    @Column(name = "CLIENT_ID", nullable = false)
+    private Integer clientId;
+
+    @Column(name = "DATE_LOCATION", nullable = false)
+    private LocalDate dateLocation;
+
+    @Column(name = "DATE_RETOUR_PREVU", nullable = false)
+    private LocalDate dateRetourPrevu;
+
+    @Column(name = "DATE_RETOUR_REEL")
+    private LocalDate dateRetourReel;
+
+    public Location() {}
+
+    public Integer getId() {
+        return id;
     }
 
-    public Date getDateLocation() {
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getCopieId() {
+        return copieId;
+    }
+
+    public void setCopieId(Integer copieId) {
+        this.copieId = copieId;
+    }
+
+    public Integer getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(Integer clientId) {
+        this.clientId = clientId;
+    }
+
+    public LocalDate getDateLocation() {
         return dateLocation;
     }
 
-    public void setDateLocation(Date dateLocation) {
+    public void setDateLocation(LocalDate dateLocation) {
         this.dateLocation = dateLocation;
     }
 
-    public Date getDateRetourPrevue() {
-        return dateRetourPrevue;
+    public LocalDate getDateRetourPrevu() {
+        return dateRetourPrevu;
     }
 
-    public void setDateRetourPrevue(Date dateRetourPrevue) {
-        this.dateRetourPrevue = dateRetourPrevue;
+    public void setDateRetourPrevu(LocalDate dateRetourPrevu) {
+        this.dateRetourPrevu = dateRetourPrevu;
     }
 
-    public Date getDateRetourReelle() {
-        return dateRetourReelle;
+    public LocalDate getDateRetourReel() {
+        return dateRetourReel;
     }
 
-    public void setDateRetourReelle(Date dateRetourReelle) {
-        this.dateRetourReelle = dateRetourReelle;
-    }
-
-    public Copie getCopie() {
-        return copie;
-    }
-
-    public void setCopie(Copie copie) {
-        this.copie = copie;
+    public void setDateRetourReel(LocalDate dateRetourReel) {
+        this.dateRetourReel = dateRetourReel;
     }
 }

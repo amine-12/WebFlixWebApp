@@ -2,7 +2,7 @@ package org.example.controller;
 
 import org.example.DTO.FilmDTO;
 import org.example.facade.FilmSystemFacade;
-import org.example.model.Film;
+import org.example.model.Copie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
