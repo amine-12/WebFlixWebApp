@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Recherche de films</title>
+</head>
+<body>
+<h1>Recherche de films</h1>
+
+<form id="rechercheForm">
+    <fieldset>
+        <legend>Critères principaux</legend>
+
+        <label for="titre">Titre du film</label>
+        <input type="text" id="titre" placeholder="ex : Titanic">
+
+        <div class="multi-field">
+            <div style="flex:1">
+                <label for="anneeMin">Année min</label>
+                <input type="number" id="anneeMin" min="1900" max="2100">
+            </div>
+            <div style="flex:1">
+                <label for="anneeMax">Année max</label>
+                <input type="number" id="anneeMax" min="1900" max="2100">
+            </div>
+        </div>
+
+        <label for="langue">Langue originale</label>
+        <input type="text" id="langue">
+
+        <label for="pays">Nom d'un pays de production</label>
+        <input type="text" id="pays">
+
+        <label for="genres">Genre du film</label>
+        <input type="text" id="genres">
+
+        <label for="acteur">Nom d’un acteur</label>
+        <input type="text" id="acteur" placeholder="ex : DiCaprio">
+
+        <label for="realisateur">Nom d’un réalisateur</label>
+        <input type="text" id="realisateur" placeholder="ex : Nolan">
+    </fieldset>
+
+    <button type="button" id="submitBtn">Rechercher</button>
+</form>
+
+<hr>
+<ul id="resultats"></ul>
+
+<script>
+    document.getElementById("submitBtn").addEventListener("click", function () {
+        const params = new URLSearchParams({
+            titre: document.getElementById("titre").value,
+            genre: document.getElementById("genres").value,
+            pays: document.getElementById("pays").value,
+            langue: document.getElementById("langue").value,
+            annee_min: document.getElementById("anneeMin").value,
+            annee_max: document.getElementById("anneeMax").value,
+            acteur: document.getElementById("acteur").value,
+            realisateur: document.getElementById("realisateur").value,
+        });
+
+        fetch(`/api/films/recherche-films?${params.toString()}`, {
+            method: "GET"
+        })
+            .then(response => response.json())
+            .then(data => {
+                const ul = document.getElementById("resultats");
+                ul.innerHTML = "";
+                data.forEach(film => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `<a href="/film/${film.id}">${film.titre} (${film.anneeSortie})</a>`;
+                    ul.appendChild(li);
+                });
+            });
+    });
+</script>
+</body>
+</html>

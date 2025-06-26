@@ -19,8 +19,8 @@ public class FilmSystemFacade {
         this.personneFilmService = new PersonneFilmService();
     }
 
-    public List<Map<String, Object>> getFilms(String titre, String genres, String pays, String langue, Integer anneeMin, Integer anneeMax) {
-        return filmService.getFilms(titre, genres, pays, langue, anneeMin, anneeMax);
+    public List<Map<String, Object>> getFilms(String titre, String genres, String pays, String langue, Integer anneeMin, Integer anneeMax,String acteur, String realisateur) {
+        return filmService.getFilms(titre, genres, pays, langue, anneeMin, anneeMax, acteur, realisateur);
     }
 
     public FilmDTO getFilmDetails(int id) {

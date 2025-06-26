@@ -30,10 +30,12 @@ public class FilmController {
             @RequestParam(required = false) String pays,
             @RequestParam(required = false) String langue,
             @RequestParam(required = false) Integer annee_min,
-            @RequestParam(required = false) Integer annee_max
-    ) {
+            @RequestParam(required = false) Integer annee_max,
+            @RequestParam(required = false) String acteur,
+            @RequestParam(required = false) String realisateur
+            ) {
         List<Map<String, Object>> resultat = facade.getFilms(
-                titre, genre, pays, langue, annee_min, annee_max
+                titre, genre, pays, langue, annee_min, annee_max, acteur, realisateur
         );
         return ResponseEntity.ok(resultat);
     }
