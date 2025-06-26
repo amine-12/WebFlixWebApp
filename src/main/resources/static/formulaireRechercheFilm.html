@@ -49,6 +49,22 @@
 
 <script>
     document.getElementById("submitBtn").addEventListener("click", function () {
+        const anneeMin = parseInt(document.getElementById("anneeMin").value);
+        const anneeMax = parseInt(document.getElementById("anneeMax").value);
+        const anneeActuelle = new Date().getFullYear();
+
+        if (!isNaN(anneeMin)) {
+            if (anneeMin > anneeActuelle) {
+                alert(`Erreur : L’année minimale ne peut pas dépasser l’année actuelle (${anneeActuelle}).`);
+                return;
+            }
+        }
+
+        if (!isNaN(anneeMin) && !isNaN(anneeMax) && anneeMin > anneeMax) {
+            alert("Erreur : L’année minimale ne peut pas être supérieure à l’année maximale.");
+            return;
+        }
+
         const params = new URLSearchParams({
             titre: document.getElementById("titre").value,
             genre: document.getElementById("genres").value,
@@ -63,15 +79,29 @@
         fetch(`/api/films/recherche-films?${params.toString()}`, {
             method: "GET"
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error("Erreur de requête");
+                return response.json();
+            })
             .then(data => {
                 const ul = document.getElementById("resultats");
                 ul.innerHTML = "";
+                if (!data || data.length === 0) {
+                    const li = document.createElement("li");
+                    li.style.color = "red";
+                    li.textContent = "Aucun film ne correspond à vos critères.";
+                    ul.appendChild(li);
+                    return;
+                }
                 data.forEach(film => {
                     const li = document.createElement("li");
                     li.innerHTML = `<a href="/film/${film.id}">${film.titre} (${film.anneeSortie})</a>`;
                     ul.appendChild(li);
                 });
+            })
+            .catch(error => {
+                const ul = document.getElementById("resultats");
+                ul.innerHTML = "<li style='color:red;'>Une erreur est survenue lors de la recherche.</li>";
             });
     });
 </script>
