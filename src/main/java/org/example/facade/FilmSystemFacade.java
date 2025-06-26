@@ -15,12 +15,15 @@ public class FilmSystemFacade {
     private final FilmService filmService;
     private final PersonneFilmService personneFilmService;
     private final UtilisateurService utilisateurService;
+    private final LocationService locationService;
+    private final PersonneService personneService;
 
     public FilmSystemFacade() {
         this.personneService = new PersonneService();
         this.filmService = new FilmService();
         this.personneFilmService = new PersonneFilmService();
         this.utilisateurService = new UtilisateurService();
+        this.locationService = new LocationService();
     }
 
     public List<Map<String, Object>> getFilms(String titre, String genres, String pays, String langue, Integer anneeMin, Integer anneeMax,String acteur, String realisateur) {

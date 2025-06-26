@@ -10,6 +10,7 @@
 
 <script>
     const id = window.location.pathname.split("/").pop();
+
     fetch(`/api/films/details/${id}`)
         .then(response => response.json())
         .then(data => {
@@ -26,7 +27,6 @@
                 <a href="/realisateur/${data.realisateur.id}">
                     ${data.realisateur.nom}
                 </a></p>
-
                 <p><strong>Scénaristes:</strong> ${(data.scenaristes ?? []).join(", ") || "Non spécifié"}</p>
                 <p><strong>Acteurs:</strong><br> ${
                 (data.acteurs ?? []).length > 0
@@ -43,6 +43,12 @@
                 : "<li>Aucune bande-annonce</li>"
             }
                 </ul>
+
+                <div style="margin-top: 30px;">
+                    <button onclick="window.location.href='/location/${id}'" style="padding:10px 20px; font-size:16px;">
+                        Louer ce film
+                    </button>
+                </div>
             `;
         })
         .catch(error => {

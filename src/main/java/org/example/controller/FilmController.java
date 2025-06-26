@@ -40,6 +40,11 @@ public class FilmController {
         return ResponseEntity.ok(resultat);
     }
 
+    @GetMapping("/copies-disponibles/{id}")
+    public ResponseEntity<List<Copie>> getCopiesDisponibles(@PathVariable int id) {
+        List<Copie> copies = facade.getCopiesDisponibles(id);
+        return ResponseEntity.ok(copies);
+    }
 
 }
 

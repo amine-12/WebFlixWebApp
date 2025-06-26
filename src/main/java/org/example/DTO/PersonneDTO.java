@@ -3,7 +3,6 @@ package org.example.DTO;
 public class PersonneDTO {
     private Integer id;
     private String email;
-    private String role;
 
     // Constructeur vide (pour Jackson si besoin)
     public PersonneDTO() {}
@@ -12,10 +11,9 @@ public class PersonneDTO {
     public PersonneDTO(Integer id, String email) {
         this.id = id;
         this.email = email;
-        this.role = role;
     }
 
-    // Getters pour la sérialisation JSON
+    // Getters
     public Integer getId() {
         return id;
     }
@@ -24,7 +22,4 @@ public class PersonneDTO {
         return email;
     }
 
-    public String getRole() {
-        return role;
-    }
 }
