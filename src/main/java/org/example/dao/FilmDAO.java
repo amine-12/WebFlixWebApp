@@ -1,10 +1,7 @@
 package org.example.dao;
 
 import org.example.HibernateUtil;
-import org.example.model.Film;
-import org.example.model.Genre;
-import org.example.model.Pays;
-import org.example.model.PersonneFilmRole;
+import org.example.model.*;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
@@ -43,7 +40,7 @@ public class FilmDAO {
         return film;
     }
 
-    public List<Map<String, Object>> searchFilms(String titre, String genre, String pays, String langue, Integer anneeMin, Integer anneeMax) {
+    public List<Map<String, Object>> searchFilms(String titre, String genre, String pays, String langue, Integer anneeMin, Integer anneeMax, String acteur, String realisateur) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
@@ -66,7 +63,7 @@ public class FilmDAO {
         }
 
         if (langue != null && !langue.isBlank()) {
-            predicates.add(cb.like(cb.lower(filmRoot.get("langueOriginale")), langue.toLowerCase()));
+            predicates.add(cb.like(cb.lower(filmRoot.get("langueOriginale")), "%" + langue.toLowerCase() + "%"));
         }
 
         if (anneeMin != null) {
@@ -77,7 +74,35 @@ public class FilmDAO {
             predicates.add(cb.lessThanOrEqualTo(filmRoot.get("anneeSortie"), anneeMax));
         }
 
-        cq.multiselect(filmRoot.get("filmId"), filmRoot.get("titre")).distinct(true);
+        if ((acteur != null && !acteur.isBlank()) || (realisateur != null && !realisateur.isBlank())) {
+            // Filtrage acteur
+            if (acteur != null && !acteur.isBlank()) {
+                Join<Film, PersonneFilmRole> acteurRoleJoin = filmRoot.join("roles", JoinType.INNER);
+                Join<PersonneFilmRole, PersonneFilm> acteurJoin = acteurRoleJoin.join("personne");
+
+                Predicate acteurPredicate = cb.and(
+                        cb.equal(cb.lower(acteurRoleJoin.get("role")), "acteur"),
+                        cb.like(cb.lower(acteurJoin.get("nom")), "%" + acteur.toLowerCase() + "%")
+                );
+                predicates.add(acteurPredicate);
+            }
+
+            // Filtrage réalisateur
+            if (realisateur != null && !realisateur.isBlank()) {
+                Join<Film, PersonneFilmRole> realisateurRoleJoin = filmRoot.join("roles", JoinType.INNER);
+                Join<PersonneFilmRole, PersonneFilm> realisateurJoin = realisateurRoleJoin.join("personne");
+
+                Predicate realPredicate = cb.and(
+                        cb.equal(cb.lower(realisateurRoleJoin.get("role")), "realisateur"),
+                        cb.like(cb.lower(realisateurJoin.get("nom")), "%" + realisateur.toLowerCase() + "%")
+                );
+                predicates.add(realPredicate);
+            }
+        }
+
+
+
+        cq.multiselect(filmRoot.get("filmId"), filmRoot.get("titre"), filmRoot.get("anneeSortie")).distinct(true);
 
         if (!predicates.isEmpty()) {
             cq.where(cb.and(predicates.toArray(new Predicate[0])));
@@ -87,11 +112,11 @@ public class FilmDAO {
 
         session.close();
 
-        // Convertir en liste de maps { "id": ..., "titre": ... }
         return results.stream().map(obj -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", obj[0]);
             map.put("titre", obj[1]);
+            map.put("anneeSortie", obj[2]);
             return map;
         }).toList();
     }

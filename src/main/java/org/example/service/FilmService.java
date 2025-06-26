@@ -14,8 +14,8 @@ public class FilmService {
         return film;
     }
 
-    public List<Map<String, Object>> getFilms(String titre, String genres, String pays, String langue, Integer anneeMin, Integer anneeMax) {
-        return filmDAO.searchFilms(titre, genres, pays, langue, anneeMin, anneeMax);
+    public List<Map<String, Object>> getFilms(String titre, String genres, String pays, String langue, Integer anneeMin, Integer anneeMax, String acteur, String realisateur) {
+        return filmDAO.searchFilms(titre, genres, pays, langue, anneeMin, anneeMax, acteur, realisateur);
     }
 }
 
