@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Analytique des locations</title>
+    <style>
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+<h1>Analytique des locations</h1>
+<form id="analytics-form">
+    <!-- Groupe d'âge -->
+    <label>
+        Âge :
+        <select id="ageMode" name="ageMode">
+            <option value="all">Tous</option>
+            <option value="range">Sélectionner tranche d'âge</option>
+        </select>
+    </label>
+    <br>
+    <div id="ageRangeFields" class="hidden">
+        <label>
+            Âge minimum :
+            <select name="ageMin" id="ageMin">
+                <option value="">--</option>
+                <!-- Valeurs par tranche de 5 ans -->
+                <!-- 0,5,...,100 -->
+                <script>
+                    const minSelect = document.createElement('select');
+                </script>
+            </select>
+        </label>
+        <label>
+            Âge maximum :
+            <select name="ageMax" id="ageMax">
+                <option value="">--</option>
+            </select>
+        </label>
+    </div>
+    <br>
+
+    <!-- Province -->
+    <label>
+        Province :
+        <select name="province" id="province">
+            <option value="">Tous</option>
+            <option>AB</option>
+            <option>BC</option>
+            <option>MB</option>
+            <option>NB</option>
+            <option>NL</option>
+            <option>NS</option>
+            <option>NT</option>
+            <option>NU</option>
+            <option>ON</option>
+            <option>PE</option>
+            <option>QC</option>
+            <option>SK</option>
+            <option>YT</option>
+        </select>
+    </label>
+    <br>
+
+    <!-- Jour de la semaine -->
+    <label>
+        Jour de la semaine :
+        <select name="jourSemaine" id="jourSemaine">
+            <option value="">Tous</option>
+            <option>Monday</option>
+            <option>Tuesday</option>
+            <option>Wednesday</option>
+            <option>Thursday</option>
+            <option>Friday</option>
+            <option>Saturday</option>
+            <option>Sunday</option>
+        </select>
+    </label>
+    <br>
+
+    <!-- Mois -->
+    <label>
+        Mois :
+        <select name="mois" id="mois">
+            <option value="">Tous</option>
+            <option>January</option>
+            <option>February</option>
+            <option>March</option>
+            <option>April</option>
+            <option>May</option>
+            <option>June</option>
+            <option>July</option>
+            <option>August</option>
+            <option>September</option>
+            <option>October</option>
+            <option>November</option>
+            <option>December</option>
+        </select>
+    </label>
+    <br><br>
+
+    <button type="submit">Lancer l’analyse</button>
+</form>
+
+<h2>Résultat</h2>
+<div id="result">—</div>
+
+<script>
+    // Initialisation des tranches d'âge
+    const ageMinSelect = document.getElementById('ageMin');
+    const ageMaxSelect = document.getElementById('ageMax');
+    for(let age = 0; age <= 100; age += 5) {
+        const optMin = document.createElement('option');
+        optMin.value = age;
+        optMin.textContent = age;
+        ageMinSelect.appendChild(optMin);
+
+        const optMax = document.createElement('option');
+        optMax.value = age;
+        optMax.textContent = age;
+        ageMaxSelect.appendChild(optMax);
+    }
+
+    // Toggle champs tranche d'âge
+    document.getElementById('ageMode').addEventListener('change', function() {
+        const rangeFields = document.getElementById('ageRangeFields');
+        rangeFields.classList.toggle('hidden', this.value !== 'range');
+    });
+
+    // Soumission du formulaire
+    document.getElementById('analytics-form').addEventListener('submit', function(ev) {
+        ev.preventDefault();
+        const params = new URLSearchParams();
+
+        // Âge
+        const mode = document.getElementById('ageMode').value;
+        if(mode === 'range') {
+            const min = document.getElementById('ageMin').value;
+            const max = document.getElementById('ageMax').value;
+            if(min) params.append('ageMin', min);
+            if(max) params.append('ageMax', max);
+        }
+
+        // Province, jour, mois
+        ['province','jourSemaine','mois'].forEach(id => {
+            const v = document.getElementById(id).value;
+            if(v) params.append(id, v);
+        });
+
+        fetch('/api/analytics/locations?' + params)
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('result').textContent =
+                    data.nombreLocations + ' locations';
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('result').textContent = 'Erreur';
+            });
+    });
+</script>
+</body>
+</html>
