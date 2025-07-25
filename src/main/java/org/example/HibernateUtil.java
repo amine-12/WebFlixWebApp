@@ -9,11 +9,13 @@ public class HibernateUtil {
 	private static final SessionFactory sessionFactory;
 
 	static {
+		SessionFactory tmpSf = null;
 		try {
 			Configuration config = new Configuration();
 
 			config.setProperty("hibernate.connection.driver_class", "oracle.jdbc.OracleDriver");
-			config.setProperty("hibernate.connection.url", "jdbc:oracle:thin:@//bdlog660.ens.ad.etsmtl.ca:1521/ORCLPDB.ens.ad.etsmtl.ca");
+			config.setProperty("hibernate.connection.url",
+					"jdbc:oracle:thin:@//bdlog660.ens.ad.etsmtl.ca:1521/ORCLPDB.ens.ad.etsmtl.ca");
 			config.setProperty("hibernate.connection.username", "EQUIPE205");
 			config.setProperty("hibernate.connection.password", "rReS1OJQ");
 			config.setProperty("hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect");
@@ -34,14 +36,17 @@ public class HibernateUtil {
 			config.addAnnotatedClass(Location.class);
 			config.addAnnotatedClass(Personne.class);
 
-			StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
-					.applySettings(config.getProperties());
+			StandardServiceRegistryBuilder builder =
+					new StandardServiceRegistryBuilder().applySettings(config.getProperties());
+			tmpSf = config.buildSessionFactory(builder.build());
 
-			sessionFactory = config.buildSessionFactory(builder.build());
+			System.out.println(">>> Hibernate SessionFactory initialisée avec succès.");
 		} catch (Throwable ex) {
-			System.err.println("Initial SessionFactory creation failed." + ex);
+			System.err.println("!!! Échec de l'initialisation de Hibernate : " + ex.getMessage());
+			ex.printStackTrace();
 			throw new ExceptionInInitializerError(ex);
 		}
+		sessionFactory = tmpSf;
 	}
 
 	public static SessionFactory getSessionFactory() {

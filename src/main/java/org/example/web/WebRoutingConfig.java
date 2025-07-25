@@ -22,6 +22,7 @@ public class WebRoutingConfig implements WebMvcConfigurer {
                 .setViewName("forward:/formulaireRechercheFilm.html");
         registry.addViewController("/location/{id:\\d+}")
                 .setViewName("forward:/location.html");
-
+        registry.addViewController("/analytics")
+                .setViewName("forward:/analytics.html");
     }
 }
