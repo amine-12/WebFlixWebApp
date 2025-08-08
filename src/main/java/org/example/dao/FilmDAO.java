@@ -13,7 +13,8 @@ import java.util.Map;
 
 public class FilmDAO {
 
-    public Film getFilmById(int id) {
+
+    public Film getFilmById(int id, int clientId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Film film = session.get(Film.class, id);
 
@@ -35,6 +36,56 @@ public class FilmDAO {
                     .findFirst()
                     .ifPresent(r -> Hibernate.initialize(r.getPersonne()));
         }
+
+        Object moyenne = session.createNativeQuery(
+                        "SELECT moyenne FROM MA_VUE_MOYENNE WHERE idFilm = :id")
+                .setParameter("id", id)
+                .uniqueResult();
+        System.out.println("Cote moyenne récupérée pour le film " + id + " : " + moyenne);
+
+        if (moyenne != null) {
+            film.setCoteMoyenne(((Number) moyenne).doubleValue());
+        }
+
+        System.out.println("Recommandations récupérées pour le film " + id + " : " + clientId);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> resultats = session.createNativeQuery(
+                        "SELECT f.FILM_ID, f.TITRE, f.AFFICHE " +
+                                "FROM MA_VUE_CORRELATIONS r " +
+                                "JOIN FILM f ON r.PK = f.FILM_ID " +
+                                "WHERE r.PJ = :filmId " +
+                                // exclure les films déjà loués par ce client
+                                "AND f.FILM_ID NOT IN ( " +
+                                "    SELECT c.FILM_ID " +
+                                "    FROM LOCATION l " +
+                                "    JOIN COPIE_FILM c ON l.COPIE_ID = c.COPIE_ID " +
+                                "    WHERE l.CLIENT_ID = :clientId " +
+                                ") " +
+                                // garder seulement les films qui ont au moins une copie disponible
+                                "AND EXISTS ( " +
+                                "    SELECT 1 FROM COPIE_FILM cf " +
+                                "    WHERE cf.FILM_ID = f.FILM_ID AND cf.EST_DISPONIBLE = 'true'\n " +
+                                ") " +
+                                "ORDER BY r.CORRELATION DESC"
+                )
+                .setParameter("filmId", id)
+                .setParameter("clientId", clientId)
+                .getResultList();
+
+        List<Film> recommandations = new ArrayList<>();
+        for (Object[] row : resultats) {
+            if (recommandations.size() >= 3) break; // TOP 3 réellement disponibles
+            Film recommandation = new Film();
+            recommandation.setFilmId(((Number) row[0]).intValue());
+            recommandation.setTitre((String) row[1]);
+            recommandation.setAffiche((String) row[2]);
+            recommandations.add(recommandation);
+        }
+
+        System.out.println("Recommandations récupérées pour le film " + id + " : " + recommandations);
+
+        film.setFilmsRecommandes(recommandations);
 
         session.close();
         return film;

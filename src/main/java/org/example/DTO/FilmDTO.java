@@ -18,11 +18,13 @@ public class FilmDTO {
     private String resume;
     private String affiche;
     private List<String> bandesAnnonces;
+    private Double coteMoyenne;
+    private List<Recommandation> recommandations;
 
     public FilmDTO(String titre, int anneeSortie, String langueOriginale, int dureeMinutes,
                    List<String> paysProduction, List<String> genres, Realisateur realisateur,
                    List<String> scenaristes, List<Acteur> acteurs, String resume,
-                   String affiche, List<String> bandesAnnonces) {
+                   String affiche, List<String> bandesAnnonces, Double coteMoyenne, List<Recommandation> recommandations) {
         this.titre = titre;
         this.anneeSortie = anneeSortie;
         this.langueOriginale = langueOriginale;
@@ -35,6 +37,8 @@ public class FilmDTO {
         this.resume = resume;
         this.affiche = affiche;
         this.bandesAnnonces = bandesAnnonces;
+        this.coteMoyenne = coteMoyenne;
+        this.recommandations = recommandations;
     }
 
     public static FilmDTO from(Film film) {
@@ -72,8 +76,11 @@ public class FilmDTO {
                 acteurs,
                 film.getResume(),
                 film.getAffiche(),
-                film.getBandesAnnonces() != null ? film.getBandesAnnonces().stream().map(BandeAnnonce::getUrl).toList() : List.of()
-        );
+                film.getBandesAnnonces() != null ? film.getBandesAnnonces().stream().map(BandeAnnonce::getUrl).toList() : List.of(),
+                film.getCoteMoyenne(),
+                film.getFilmsRecommandes().stream()
+                        .map(f -> new Recommandation(f.getFilmId(), f.getTitre()))
+                        .toList()        );
     }
 
     public static List<FilmDTO> fromList(List<Film> films) {
@@ -116,6 +123,22 @@ public class FilmDTO {
     public List<String> getBandesAnnonces() { return bandesAnnonces; }
     public void setBandesAnnonces(List<String> bandesAnnonces) { this.bandesAnnonces = bandesAnnonces; }
 
+    public Double getCoteMoyenne() {
+        return coteMoyenne;
+    }
+
+    public void setCoteMoyenne(Double coteMoyenne) {
+        this.coteMoyenne = coteMoyenne;
+    }
+
+    public List<Recommandation> getRecommandations() {
+        return recommandations;
+    }
+
+    public void setRecommandations(List<Recommandation> recommandations) {
+        this.recommandations = recommandations;
+    }
+
     public static class Acteur {
         private int id;
         private String nom;
@@ -153,5 +176,19 @@ public class FilmDTO {
         public void setNom(String nom) { this.nom = nom; }
     }
 
+    public static class Recommandation {
+        private int id;
+        private String titre;
 
+        public Recommandation(int id, String titre) {
+            this.id = id;
+            this.titre = titre;
+        }
+
+        public int getId() { return id; }
+        public String getTitre() { return titre; }
+
+        public void setId(int id) { this.id = id; }
+        public void setTitre(String titre) { this.titre = titre; }
+    }
 }

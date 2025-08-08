@@ -37,7 +37,7 @@ public class LocationService {
         }
 
         // Charger le film
-        Film film = filmDAO.getFilmById(copie.getFilmId());
+        Film film = filmDAO.getFilmById(copie.getFilmId(),clientId);
         if (film == null || film.getNbrCopiesDisponibles() <= 0) {
             return "Aucune copie disponible pour ce film.";
         }
