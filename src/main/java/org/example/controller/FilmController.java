@@ -18,9 +18,9 @@ public class FilmController {
         this.facade = new FilmSystemFacade();
     }
 
-    @GetMapping("/details/{id}")
-    public ResponseEntity<FilmDTO> getFilm(@PathVariable int id) {
-        return ResponseEntity.ok(facade.getFilmDetails(id));
+    @GetMapping("/details/{id}/{clientId}")
+    public ResponseEntity<FilmDTO> getFilm(@PathVariable int id, @PathVariable int clientId) {
+        return ResponseEntity.ok(facade.getFilmDetails(id, clientId));
     }
 
     @GetMapping("/recherche-films")

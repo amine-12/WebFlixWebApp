@@ -1,9 +1,7 @@
 package org.example.model;
 
 import javax.persistence.*;
-import java.sql.Clob;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Entity
@@ -37,6 +35,11 @@ public class Film {
     @Column(name = "NBR_COPIES_DISPONIBLES")
     private int NbrCopiesDisponibles = ThreadLocalRandom.current().nextInt(1, 101);
 
+    @Transient
+    private Double coteMoyenne;
+
+    @Transient
+    private List<Film> filmsRecommandes;
     // ----- RELATIONS -----
 
     @OneToMany(mappedBy = "film", fetch = FetchType.LAZY)
@@ -196,5 +199,21 @@ public class Film {
 
     public void setNbrCopiesDisponibles(int nbrCopiesDisponibles) {
         NbrCopiesDisponibles = nbrCopiesDisponibles;
+    }
+
+    public Double getCoteMoyenne() {
+        return coteMoyenne;
+    }
+
+    public void setCoteMoyenne(Double coteMoyenne) {
+        this.coteMoyenne = coteMoyenne;
+    }
+
+    public List<Film> getFilmsRecommandes() {
+        return filmsRecommandes;
+    }
+
+    public void setFilmsRecommandes(List<Film> filmsRecommandes) {
+        this.filmsRecommandes = filmsRecommandes;
     }
 }

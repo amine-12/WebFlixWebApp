@@ -30,8 +30,8 @@ public class FilmSystemFacade {
         return filmService.getFilms(titre, genres, pays, langue, anneeMin, anneeMax, acteur, realisateur);
     }
 
-    public FilmDTO getFilmDetails(int id) {
-        return FilmDTO.from(filmService.getFilmDetails(id));
+    public FilmDTO getFilmDetails(int id, int clientId) {
+        return FilmDTO.from(filmService.getFilmDetails(id, clientId));
     }
 
     public PersonneFilmDTO getPersonneDetails(int id) {

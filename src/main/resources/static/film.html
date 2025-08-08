@@ -1,60 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Film Details</title>
+    <title>Détails du film</title>
 </head>
 <body>
 <h1>Détails du film</h1>
-<div id="film-container"></div>
+<div id="film-container">Chargement...</div>
 
 <script>
-    const id = window.location.pathname.split("/").pop();
+    // Récupérer les paramètres : /film/{id}/{clientId}
+    const pathSegments = window.location.pathname.split("/");
+    const id = parseInt(pathSegments[2]);
+    const clientId = parseInt(localStorage.getItem("clientId") || "0");
 
-    fetch(`/api/films/details/${id}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            const container = document.getElementById("film-container");
-            container.innerHTML = `
-                <h2>${data.titre ?? "Titre inconnu"} (${data.anneeSortie ?? "?"})</h2>
-                ${data.affiche ? `<img src="${data.affiche}" alt="Affiche du film" style="max-width:200px;"><br>` : ""}
-                <p><strong>Langue:</strong> ${data.langueOriginale ?? "Inconnue"}</p>
-                <p><strong>Durée:</strong> ${data.dureeMinutes ?? "?"} minutes</p>
-                <p><strong>Pays:</strong> ${(data.paysProduction ?? []).join(", ") || "Non spécifié"}</p>
-                <p><strong>Genres:</strong> ${(data.genres ?? []).join(", ") || "Non spécifié"}</p>
-                <p><strong>Réalisateur:</strong>
-                <a href="/realisateur/${data.realisateur.id}">
-                    ${data.realisateur.nom}
-                </a></p>
-                <p><strong>Scénaristes:</strong> ${(data.scenaristes ?? []).join(", ") || "Non spécifié"}</p>
-                <p><strong>Acteurs:</strong><br> ${
-                (data.acteurs ?? []).length > 0
-                    ? data.acteurs.map(a =>
-                        `<a href="/acteur/${a.id}">${a.nom}</a> (rôle: ${a.personnage ?? "?"})`
-                    ).join("<br>")
-                    : "Aucun acteur listé"
-            }</p>
-                <p><strong>Résumé:</strong> ${data.resume ?? "Aucun résumé disponible."}</p>
-                <p><strong>Bande-annonces:</strong></p>
-                <ul>
-                    ${(data.bandesAnnonces ?? []).length > 0
-                ? data.bandesAnnonces.map(url => `<li><a href="${url}" target="_blank">${url}</a></li>`).join("")
-                : "<li>Aucune bande-annonce</li>"
-            }
-                </ul>
+    if (isNaN(id) || isNaN(clientId)) {
+        document.getElementById("film-container").textContent = "Paramètres invalides.";
+    } else {
+        fetch(`/api/films/details/${id}/${clientId}`)
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById("film-container");
 
-                <div style="margin-top: 30px;">
-                    <button onclick="window.location.href='/location/${id}'" style="padding:10px 20px; font-size:16px;">
-                        Louer ce film
-                    </button>
-                </div>
-            `;
-        })
-        .catch(error => {
-            console.error("Erreur lors de la récupération du film :", error);
-            document.getElementById("film-container").innerHTML = `<p style="color:red;">Impossible de charger les données du film.</p>`;
-        });
+                // Cote moyenne sur 2 décimales, affichée /5
+                const moyenneTxt =
+                    (typeof data.coteMoyenne === 'number' && !isNaN(data.coteMoyenne))
+                        ? (data.coteMoyenne.toFixed(2) + " / 5")
+                        : "Aucune cote";
+
+                container.innerHTML = `
+          <h2>${data.titre ?? "Titre inconnu"} (${data.anneeSortie ?? "?"})</h2>
+          ${data.affiche ? `<img src="${data.affiche}" alt="Affiche du film"><br>` : ""}
+          <p><strong>Langue:</strong> ${data.langueOriginale ?? "Inconnue"}</p>
+          <p><strong>Durée:</strong> ${data.dureeMinutes ?? "?"} minutes</p>
+          <p><strong>Pays:</strong> ${(data.paysProduction ?? []).join(", ") || "Non spécifié"}</p>
+          <p><strong>Genres:</strong> ${(data.genres ?? []).join(", ") || "Non spécifié"}</p>
+          <p><strong>Réalisateur:</strong>
+            ${
+                    data.realisateur
+                        ? `<a href="/realisateur/${data.realisateur.id}">${data.realisateur.nom ?? "Inconnu"}</a>`
+                        : "Inconnu"
+                }
+          </p>
+          <p><strong>Scénaristes:</strong> ${(data.scenaristes ?? []).join(", ") || "Non spécifié"}</p>
+          <p><strong>Acteurs:</strong><br>
+            ${
+                    (data.acteurs ?? []).length > 0
+                        ? data.acteurs.map(a =>
+                            `<a href="/acteur/${a.id}">${a.nom}</a> (rôle: ${a.personnage ?? "?"})`
+                        ).join("<br>")
+                        : "Aucun acteur listé"
+                }
+          </p>
+          <p><strong>Résumé:</strong> ${data.resume ?? "Aucun résumé disponible."}</p>
+          <p><strong>Bande-annonces:</strong></p>
+          <ul>
+            ${
+                    (data.bandesAnnonces ?? []).length > 0
+                        ? (data.bandesAnnonces.map(url => `<li><a href="${url}" target="_blank">${url}</a></li>`).join(""))
+                        : "<li>Aucune bande-annonce</li>"
+                }
+          </ul>
+          <p><strong>Cote moyenne:</strong> ${moyenneTxt}</p>
+          <p><strong>Recommandations:</strong><br>
+            ${
+                    (data.recommandations ?? []).length > 0
+                        ? data.recommandations.map(f => `<a href="/film/${f.id}">${f.titre}</a>`).join("<br>")
+                        : "Aucune recommandation disponible"
+                }
+          </p>
+          <div>
+            <button onclick="window.location.href='/location/${id}'">Louer ce film</button>
+          </div>
+        `;
+            })
+            .catch(error => {
+                console.error("Erreur lors de la récupération du film :", error);
+                document.getElementById("film-container").textContent =
+                    "Impossible de charger les données du film.";
+            });
+    }
 </script>
 </body>
 </html>
